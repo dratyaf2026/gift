@@ -3,142 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سحبة الدكتورة أطياف حسن</title>
+    <title>مبادرة الدكتورة أطياف حسن محمد</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --dark-bg: #0a0a0a; --card-bg: #121212; }
-        body { background: var(--dark-bg); color: white; font-family: 'Tajawal', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; box-sizing: border-box; }
-        .container { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 1px solid var(--gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
-        .header-box { background: var(--gold); color: black; padding: 12px; border-radius: 12px; font-weight: bold; margin-bottom: 20px; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .upload-area { border: 2px dashed #444; padding: 30px 10px; border-radius: 15px; cursor: pointer; margin-bottom: 20px; background: #1a1a1a; }
-        #preview-img { max-width: 100%; max-height: 150px; display: none; margin: 15px auto; border-radius: 8px; border: 1px solid var(--gold); }
-        .form-group { text-align: right; margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; color: var(--gold); font-size: 0.9rem; }
-        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a1a1a; color: white; box-sizing: border-box; font-family: 'Tajawal'; }
-        .btn { background: var(--gold); color: black; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-        .btn:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
-        #status-msg { margin-top: 15px; color: var(--gold); font-size: 0.9rem; display: none; }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--gold); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 8px; }
+        :root { --tiktok-pink: #fe2c55; --dark: #0a0a0a; --gold: #d4af37; }
+        body { background: var(--dark); color: white; font-family: 'Tajawal', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        
+        .container { 
+            background: #121212; 
+            padding: 30px; 
+            border-radius: 24px; 
+            width: 90%; 
+            max-width: 420px; 
+            text-align: center; 
+            border: 1px solid var(--gold); 
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); 
+        }
+
+        .initiative-header {
+            background: var(--gold);
+            color: #000;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .upload-box { border: 2px dashed var(--gold); padding: 40px 20px; border-radius: 15px; cursor: pointer; margin: 20px 0; background: rgba(212, 175, 55, 0.05); }
+        
+        .btn { background: var(--gold); color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        .btn:disabled { background: #444; cursor: not-allowed; }
+        
+        #status { margin-top: 15px; color: var(--gold); display: none; }
+        #success-page, #error-page { display: none; }
+        
+        .prize-banner { 
+            background: linear-gradient(45deg, #d4af37, #f9f295, #b38728);
+            color: #000;
+            padding: 25px 15px;
+            border-radius: 15px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin: 20px 0;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        .instruction-text {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border-right: 4px solid var(--gold);
+            margin-top: 15px;
+            font-size: 1rem;
+            color: #eee;
+            line-height: 1.6;
+        }
+
+        @keyframes glow { from { transform: scale(1); } to { transform: scale(1.03); } }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--gold); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-box">مبادرة الدكتورة أطياف حسن</div>
+<div class="container" id="main-container">
+    <div class="initiative-header">مبادرة دكتورة أطياف حسن خلال شهر رمضان الكريم</div>
 
-    <div id="step1" class="page active">
-        <h3>التحقق من المتابعة</h3>
-        <p style="font-size: 0.85rem; color: #aaa;">ارفع صورة تثبت متابعتك لتيك توك (Screenshot)</p>
-        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-            <span id="file-label">📸 اضغط لاختيار الصورة</span>
+    <div id="upload-page">
+        <h2> الخصم الرمضاني🌙🌙</h2>
+        <p>ارفع لقطة شاشة تظهر متابعتك لصفحتنا على تيكتوك</p>
+        
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <span id="file-label">📁 اضغط لرفع الصورة</span>
             <input type="file" id="fileInput" accept="image/*" hidden>
-            <img id="preview-img">
         </div>
-        <button id="verifyBtn" class="btn" onclick="startOCR()">تأكيد الصورة والتحقق</button>
-        <div id="status-msg"><div class="loader"></div> جاري تحليل الصورة ذكياً...</div>
+
+        <button id="verifyBtn" class="btn" onclick="analyzeImage()">التحقق من المتابعة</button>
+        
+        <div id="status">
+            <div class="loader"></div> <span>جاري فحص لقطة الشاشة...</span>
+        </div>
     </div>
 
-    <div id="step2" class="page">
-        <h3 style="color:var(--gold)">تم التحقق ✅</h3>
-        <p>يرجى إدخال بياناتك للدخول في السحبة</p>
-        <div class="form-group"><label>الاسم الثلاثي:</label><input type="text" id="userName"></div>
-        <div class="form-group">
-            <label>المحافظة:</label>
-            <select id="userCity">
-                <option value="">اختر المحافظة</option>
-                <option>بغداد</option><option>البصرة</option><option>نينوى</option><option>أربيل</option><option>النجف</option><option>كربلاء</option><option>ذي قار</option><option>بابل</option><option>كركوك</option><option>الأنبار</option><option>ديالى</option><option>المثنى</option><option>القادسية</option><option>ميسان</option><option>واسط</option><option>صلاح الدين</option><option>دهوك</option><option>السليمانية</option>
-            </select>
+    <div id="success-page">
+        <h1 style="font-size: 3rem; margin-bottom: 10px;">🌙</h1>
+        <h2 style="color: var(--gold);">مبروك! تم التحقق بنجاح</h2>
+        <div class="prize-banner">خصم مليون دينار عراقي</div>
+        
+        <div class="instruction-text">
+            ⚠️ <b>ملاحظة هامة:</b><br>
+            يرجى إظهار هذه الشاشة إلى <b>قسم الحسابات</b> ليقوموا بعمل الخصم لحضرتكم فوراً.
         </div>
-        <div class="form-group"><label>رقم الهاتف:</label><input type="tel" id="userPhone" placeholder="07XXXXXXXX" dir="ltr"></div>
-        <button id="submitBtn" class="btn" onclick="sendToSheet()">إرسال البيانات</button>
+
+        <button class="btn" style="margin-top: 20px;" onclick="location.reload()">إغلاق</button>
     </div>
 
-    <div id="step3" class="page">
-        <h1 style="font-size: 3rem;">🎉</h1>
-        <h2 style="color: var(--gold);">تم الاشتراك بنجاح!</h2>
-        <p>سيتم التواصل مع الفائزين بعد انتهاء الفرز.</p>
-        <button class="btn" style="background:#333; color:white;" onclick="location.reload()">إغلاق</button>
+    <div id="error-page">
+        <h1 style="font-size: 3rem; margin-bottom: 10px;">❌</h1>
+        <h2>فشل التحقق</h2>
+        <p>تأكد أن الزر أصبح باللون الرصاصي (مراسلة) وأنك قمت بمتابعة الحساب فعلاً.</p>
+        <button class="btn" onclick="location.reload()">إعادة المحاولة</button>
     </div>
 </div>
 
 <script>
     const fileInput = document.getElementById('fileInput');
-    const previewImg = document.getElementById('preview-img');
-    const statusMsg = document.getElementById('status-msg');
+    const statusDiv = document.getElementById('status');
     const verifyBtn = document.getElementById('verifyBtn');
 
-    fileInput.onchange = function() {
-        if (this.files[0]) {
-            document.getElementById('file-label').style.display = 'none';
-            const reader = new FileReader();
-            reader.onload = e => { previewImg.src = e.target.result; previewImg.style.display = 'block'; }
-            reader.readAsDataURL(this.files[0]);
+    fileInput.onchange = () => {
+        if(fileInput.files.length > 0) {
+            document.getElementById('file-label').innerText = "✅ تم اختيار الصورة";
+            document.getElementById('file-label').style.color = "#d4af37";
         }
     };
 
-    async function startOCR() {
-        if (!fileInput.files[0]) return alert("يرجى اختيار صورة");
+    async function analyzeImage() {
+        if (fileInput.files.length === 0) return alert("يرجى اختيار صورة أولاً");
 
         verifyBtn.disabled = true;
-        statusMsg.style.display = "block";
-
+        statusDiv.style.display = 'block';
+        
         try {
-            // تفعيل المحرك وقراءة اللغتين العربية والانجليزية
-            const worker = await Tesseract.createWorker();
-            await worker.loadLanguage('ara+eng');
-            await worker.initialize('ara+eng');
-            
-            const { data: { text } } = await worker.recognize(fileInput.files[0]);
-            await worker.terminate();
+            const image = fileInput.files[0];
+            const result = await Tesseract.recognize(image, 'eng+ara');
+            const text = result.data.text.toLowerCase();
 
-            console.log("النص المكتشف:", text); // للمراقبة في الـ Console
+            const isPCSuccess = text.includes('following');
+            const isMobileSuccess = text.includes('مراسلة') || 
+                                    text.includes('suggested') || 
+                                    text.includes('مقترحة');
+            const isStillRed = text.includes('متابعة') && !text.includes('following');
 
-            // الكلمات التي تؤكد المتابعة
-            const keywords = ['following', 'message', 'friends', 'متابعة', 'رسالة', 'أصدقاء', 'tiktok', 'atyaf'];
-            const isMatch = keywords.some(key => text.toLowerCase().includes(key));
+            setTimeout(() => {
+                document.getElementById('upload-page').style.display = 'none';
+                statusDiv.style.display = 'none';
 
-            if (isMatch) {
-                document.getElementById('step1').classList.remove('active');
-                document.getElementById('step2').classList.add('active');
-            } else {
-                alert("تعذر العثور على إثبات المتابعة في الصورة. تأكد أنك داخل بروفايل الدكتورة وأن كلمة (متابعة) ظاهرة.");
-                verifyBtn.disabled = false;
-                statusMsg.style.display = "none";
-            }
+                if ((isPCSuccess || isMobileSuccess) && !isStillRed) {
+                    document.getElementById('success-page').style.display = 'block';
+                } else {
+                    document.getElementById('error-page').style.display = 'block';
+                }
+            }, 1500);
+
         } catch (error) {
-            alert("حدث خطأ في المحرك. تأكد من جودة الإنترنت.");
-            verifyBtn.disabled = false;
-            statusMsg.style.display = "none";
-        }
-    }
-
-    async function sendToSheet() {
-        const name = document.getElementById('userName').value;
-        const city = document.getElementById('userCity').value;
-        const phone = document.getElementById('userPhone').value;
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw5LThYfl6XPd7eRYWQWV28kE2jjx9LI8HGq9UXceG_G26pK20ljpMuRMZIx466mYjejQ/exec';
-
-        if (!name || !city || !phone) return alert("يرجى ملء البيانات");
-
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true;
-        btn.innerText = "جاري الإرسال...";
-
-        try {
-            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, city, phone }) });
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step3').classList.add('active');
-        } catch (e) {
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step3').classList.add('active');
+            alert("حدث خطأ في قراءة الصورة.");
+            location.reload();
         }
     }
 </script>
-
 </body>
 </html>
